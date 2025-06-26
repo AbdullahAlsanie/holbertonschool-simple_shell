@@ -16,7 +16,8 @@ int main(void)
 
 	while (1)
 	{
-		printf(";)$ ");
+		if (isatty(STDIN_FILENO))
+			printf(":)$ ");
 		nread = getline(&buffer, &size, stdin);
 		i++;
 
