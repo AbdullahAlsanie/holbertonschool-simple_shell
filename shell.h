@@ -4,7 +4,7 @@
 /* All needed headers for the project, determine by the allowed functions mentioned. */
 #include <string.h>
 #include <unistd.h>
-#include <stilib.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>
 #include <sys/types.h>
