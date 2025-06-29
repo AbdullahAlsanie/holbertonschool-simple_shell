@@ -38,7 +38,7 @@ int main(void)
 				break;
 		/*To check the file if it excuetable*/
 		if (access(buffer, X_OK) == -1)
-			fprintf("hsh: %d: %s: not found\n", i,  buffer);
+			fprintf(stderr, "hsh: %d: %s: not found\n", i,  buffer);
 		else
 		{
 		pid = fork();
