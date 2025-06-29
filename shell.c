@@ -17,17 +17,26 @@ int main(void)
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			printf(":)$ ");
+			printf("($) ");
+
 		nread = getline(&buffer, &size, stdin);
 		i++;
 
 		/* EOF (Ctrl+D) */
 		if (nread == -1)
+		{
+			printf("\n");
 			break;
+		}
+
 		/* remove the new line */
 		if (buffer[nread - 1] == '\n')
 			buffer[nread - 1] = '\0';
 
+		/*if the user want to Exit*/
+		if(strcmp(buffer, "exit" == 0)
+				break;
+		/*To check the file if it excuetable*/
 		if (access(buffer, X_OK) == -1)
 			printf("hsh: %d: %s: not found\n", i,  buffer);
 		else
@@ -40,8 +49,8 @@ int main(void)
 			argv[0] = buffer;
 			argv[1] = NULL;
 			execve(buffer, argv, environ);
-			perror("execve");
-			exit(1);
+			perror("./hsh");
+			exit(EXIT_FAILURE);
 		}
 		else
 			wait(NULL);
