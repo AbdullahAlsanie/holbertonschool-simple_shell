@@ -34,7 +34,7 @@ int main(void)
 			buffer[nread - 1] = '\0';
 
 		/*if the user want to Exit*/
-		if(strcmp(buffer, "exit" == 0)
+		if(strcmp(buffer, "exit") == 0)
 				break;
 		/*To check the file if it excuetable*/
 		if (access(buffer, X_OK) == -1)
