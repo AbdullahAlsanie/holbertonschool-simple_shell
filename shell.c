@@ -70,5 +70,6 @@ int main(void)
 			wait(NULL);
 	}
 	free(buffer);
+	free(tmp);
 	return(0);
 }
