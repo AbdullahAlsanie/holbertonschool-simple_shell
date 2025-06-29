@@ -17,4 +17,7 @@
 /* the Globale varibale to use throughout the project */
 extern char **environ;
 
+/* Shell functions (str) */
+char* rm_spaces(char* str);
+
 #endif
