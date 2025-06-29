@@ -31,17 +31,24 @@ int main(void)
 
 		/* remove the new line */
 		if (buffer[nread - 1] == '\n')
-			buffer[nread - 1] = '\0';
-
+			buffer[nread - 1] = '\0';		
+		
 		/*if the user want to Exit*/
 		if(strcmp(buffer, "exit") == 0)
 				break;
+		
 		/*To check the file if it excuetable*/
 		if (access(buffer, X_OK) == -1)
 			fprintf(stderr, "hsh: %d: %s: not found\n", i,  buffer);
 		else
 		{
 		pid = fork();
+
+		if(pid == -1)
+		{
+			perror("fork");
+				continue;
+		}
 
 		if(pid == 0)
 		{
