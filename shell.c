@@ -24,7 +24,6 @@ int main(void)
 		/* EOF (Ctrl+D) */
 		if (nread == -1)
 		{
-			printf("\n");
 			break;
 		}
 
