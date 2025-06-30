@@ -66,7 +66,7 @@ int execute(char **args, char *argv, int cmd_count)
 	pid = fork();
 	if (pid == 0)
 	{
-		char *cmd = find_path(args[0]);
+		char *cmd = args[0];
 
 		if (!cmd)
 		{
