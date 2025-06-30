@@ -1,23 +1,28 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-/* All needed headers for the project, determine by the allowed functions mentioned. */
-#include <string.h>
-#include <unistd.h>
 
-#include <stdlib.h>
+#define _GNU_SOURCE
+
+
 #include <stdio.h>
-#include <dirent.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/wait.h>
-#include <signal.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stddef.h>
 
-/* the Globale varibale to use throughout the project */
 extern char **environ;
 
-/* Shell functions (str) */
-char* rm_spaces(char* str);
+char *read_line(void);
+char **split_line(char *line);
+int execute(char **args, char *argv, int cmd_count);
+char *find_path(char *cmd);
+void print_env(void);
+void free_args(char **args);
 
 #endif

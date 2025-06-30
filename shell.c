@@ -1,71 +1,38 @@
 #include "shell.h"
 
-/*
- * main - the main shell program
- *
- * Return: Void
- */
-int main(void)
+int main(int argc, char **argv)
 {
-	char *buffer = NULL;
-	size_t size = 0;
-	ssize_t nread;
-	pid_t pid;
-	int i = 0;
+	char *line = NULL;
+	char **args = NULL;
+	int status = 1;
+	int cmd_count = 0;
+	(void)argc;
 
-	while (1)
-	{
+	do {
 		if (isatty(STDIN_FILENO))
 			printf("($) ");
-
-		nread = getline(&buffer, &size, stdin);
-
-
-
-		/* EOF (Ctrl+D) */
-		if (nread == -1)
-		{
+		line = read_line();
+		if (!line)
 			break;
-		}
+		cmd_count++;
+		args = split_line(line);
+		if (args[0])
+			status = execute(args, argv[0], cmd_count);
+		free(line);
+		free_args(args);
+	} while (status);
+	return (0);
+}
 
-		/* remove the new line */
-		if (buffer[nread - 1] == '\n')
-			buffer[nread - 1] = '\0';
-
-	       	/* removing white spaces */
-	       	rm_spaces(buffer);
-
-		i++;
-
-		/*if the user want to Exit*/
-		if(strcmp(buffer, "exit") == 0)
-				break;
-		
-		/*To check the file if it excuetable*/
-		if (access(buffer, X_OK) == -1){
-			fprintf(stderr, "hsh: %d: %s: not found\n", i,  buffer);
-			continue;
-		}
-
-		pid = fork();
-		if(pid == -1)
-		{
-			perror("fork");
-				continue;
-		}
-
-		if(pid == 0)
-		{
-			char *argv[2];
-			argv[0] = buffer;
-			argv[1] = NULL;
-			execve(buffer, argv, environ);
-			perror("execve");
-			exit(EXIT_FAILURE);
-		}
-		else
-			wait(NULL);
-	}
-	free(buffer);
-	return(0);
+/**
+ * free_args - frees the memory
+ * @args: the array to free
+ * Return: nothing
+ */
+void free_args(char **args)
+{
+	int i = 0;
+	while (args[i])
+		free(args[i++]);
+	free(args);
 }
