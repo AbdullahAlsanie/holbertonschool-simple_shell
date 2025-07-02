@@ -49,6 +49,25 @@ char **split_line(char *line)
 }
 
 /**
+ * _getenv - retrieves the value of an environment variable from environ
+ * @name: name of the environment variable
+ * Return: pointer to the value string or NULL if not found
+ */
+char *_getenv(const char *name)
+{
+    int i = 0;
+    size_t len = strlen(name);
+
+    while (environ[i])
+    {
+        if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
+            return (environ[i] + len + 1);
+        i++;
+    }
+    return (NULL);
+}
+
+/**
  * execute - forks and executes a command
  * @args: array of arguments (NULL-terminated)
  * @argv: argv[0] from main, shell executable path
