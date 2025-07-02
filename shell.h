@@ -1,10 +1,6 @@
 #ifndef SHELL_H
 #define SHELL_H
-
-
 #define _GNU_SOURCE
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -24,10 +20,6 @@ int execute(char **args, char *argv, int cmd_count);
 char *find_path(char *cmd);
 void print_env(void);
 void free_args(char **args);
-
-int execute(char **args, char *argv, int cmd_count);
-char *find_path(char *cmd);
-void print_env(void);
 char *_getenv(const char *name);
 
 #endif
