@@ -11,7 +11,6 @@ int execute(char **args, char *argv, int cmd_count)
     pid_t pid;
     int status;
     char *cmd;
-    char *path_env;
 
     if (args[0] == NULL)
         return (1);
@@ -27,20 +26,10 @@ int execute(char **args, char *argv, int cmd_count)
         return (1);
     }
 
-    /* CRITICAL FIX: Handle empty PATH case */
-    path_env = _getenv("PATH");
-
-    /* If PATH is empty string, print "OK" and return */
-    if (path_env && path_env[0] == '\0')
-    {
-        printf("OK\n");
-        return (1);
-    }
-
     /* Find full path */
     cmd = find_path(args[0]);
 
-    /* CRITICAL FIX: Check if command exists BEFORE forking */
+    /* Check if command exists BEFORE forking */
     if (!cmd)
     {
         fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
@@ -59,11 +48,10 @@ int execute(char **args, char *argv, int cmd_count)
         return (1);
     }
 
-    /* Only fork if command exists and is executable - THIS FIXES THE FORK ISSUE */
+    /* Only fork if command exists and is executable */
     pid = fork();
     if (pid == 0)
     {
-        /* Child process */
         execve(cmd, args, environ);
         perror("execve");
         free(cmd);
@@ -77,10 +65,9 @@ int execute(char **args, char *argv, int cmd_count)
     }
     else
     {
-        /* Parent process */
         waitpid(pid, &status, 0);
         free(cmd);
     }
-
     return (1);
 }
+
