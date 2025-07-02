@@ -11,13 +11,13 @@ int execute(char **args, char *argv, int cmd_count)
 {
 	pid_t pid;
 	int status;
-	char *cmd_path;
+	char *cmd;
 
 	if (args[0] == NULL)
 		return (1);
 
 	if (strcmp(args[0], "exit") == 0)
-		return (0);
+		exit(0);
 
 	if (strcmp(args[0], "env") == 0)
 	{
@@ -25,33 +25,34 @@ int execute(char **args, char *argv, int cmd_count)
 		return (1);
 	}
 
-	cmd_path = find_path(args[0]);
-	if (!cmd_path)
+	cmd = find_path(args[0]);
+	if (!cmd)
 	{
 		fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
-		return (1);
+		/* رجع 127 كـ exit status لما الأمر مش موجود */
+		return (127);
 	}
 
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(cmd_path, args, environ) == -1)
-		{
-			perror("execve");
-			free(cmd_path);
-			exit(EXIT_FAILURE);
-		}
+		execve(cmd, args, environ);
+		perror("execve");
+		free(cmd);
+		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
 	{
 		perror("fork");
+		free(cmd);
+		return (1);
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
+		free(cmd);
 	}
 
-	free(cmd_path);
 	return (1);
 }
 
