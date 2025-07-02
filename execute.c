@@ -6,6 +6,15 @@
  * @cmd_count: command number (used in error messages)
  * Return: 1 to continue loop, 0 to exit shell
  */
+#include "shell.h"
+
+/**
+ * execute - executes a command using PATH
+ * @args: array of command and arguments
+ * @argv: program name (argv[0])
+ * @cmd_count: command number (for error messages)
+ * Return: 1 to continue shell loop, 0 to exit shell
+ */
 int execute(char **args, char *argv, int cmd_count)
 {
     pid_t pid;
@@ -15,30 +24,29 @@ int execute(char **args, char *argv, int cmd_count)
     if (args[0] == NULL)
         return (1);
 
-    /* Handle built-in exit */
     if (strcmp(args[0], "exit") == 0)
         exit(0);
 
-    /* Handle built-in env */
     if (strcmp(args[0], "env") == 0)
     {
         print_env();
         return (1);
     }
 
-    /* Find full path */
+    /* Get the full path of the command */
     cmd = find_path(args[0]);
 
-    /* Check if command exists BEFORE forking */
+    /* Command not found */
     if (!cmd)
     {
         fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
+        /* If non-interactive, exit with status 127 */
         if (!isatty(STDIN_FILENO))
             exit(127);
         return (1);
     }
 
-    /* Additional check for execution permission */
+    /* Command found but no execute permission */
     if (access(cmd, X_OK) != 0)
     {
         fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
@@ -48,7 +56,7 @@ int execute(char **args, char *argv, int cmd_count)
         return (1);
     }
 
-    /* Only fork if command exists and is executable */
+    /* Fork to execute the command */
     pid = fork();
     if (pid == 0)
     {
