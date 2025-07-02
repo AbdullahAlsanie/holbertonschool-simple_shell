@@ -1,6 +1,6 @@
 #ifndef SHELL_H
 #define SHELL_H
-#define *GNU*SOURCE
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
