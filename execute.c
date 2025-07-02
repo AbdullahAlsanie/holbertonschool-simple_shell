@@ -6,15 +6,7 @@
  * @cmd_count: command number (used in error messages)
  * Return: 1 to continue loop, 0 to exit shell
  */
-#include "shell.h"
 
-/**
- * execute - executes a command using PATH
- * @args: array of command and arguments
- * @argv: program name (argv[0])
- * @cmd_count: command number (for error messages)
- * Return: 1 to continue shell loop, 0 to exit shell
- */
 int execute(char **args, char *argv, int cmd_count)
 {
     pid_t pid;
@@ -34,19 +26,18 @@ int execute(char **args, char *argv, int cmd_count)
     }
 
     /* Get the full path of the command */
-    cmd = find_path(args[0]);
-
     /* Command not found */
+
+    cmd = find_path(args[0]);
     if (!cmd)
     {
-        fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
-        /* If non-interactive, exit with status 127 */
-        if (!isatty(STDIN_FILENO))
-            exit(127);
-        return (1);
+    fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
+    if (!isatty(STDIN_FILENO))
+	    exit(127);
+    return (1);
     }
 
-    /* Command found but no execute permission */
+
     if (access(cmd, X_OK) != 0)
     {
         fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
