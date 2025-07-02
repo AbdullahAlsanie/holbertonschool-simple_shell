@@ -25,4 +25,8 @@ char *find_path(char *cmd);
 void print_env(void);
 void free_args(char **args);
 
+int execute(char **args, char *argv, int cmd_count);
+char *find_path(char *cmd);
+void print_env(void);
+
 #endif

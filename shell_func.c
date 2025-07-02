@@ -55,6 +55,7 @@ char **split_line(char *line)
  * @cmd_count: command count (line number)
  * Return: 1 to continue shell, or exits on 'exit'
  */
+/**
 int execute(char **args, char *argv, int cmd_count)
 {
 	pid_t pid;
@@ -87,4 +88,4 @@ int execute(char **args, char *argv, int cmd_count)
 	}
 
 	return (1);
-}
+}*/
