@@ -29,13 +29,15 @@ int execute(char **args, char *argv, int cmd_count)
 
 	/* Find full path */
 	cmd = find_path(args[0]);
-	if (!cmd)
+
+	if (!cmd || access(cmd, X_OK) != 0)
 	{
 		fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
-		/*Exit with 127 only in non-interactive mode */
+		if (cmd)
+			free(cmd);
 		if (!isatty(STDIN_FILENO))
 			exit(127);
-		return (1); /* Keep shell running in interactive mode */
+		return (1);
 	}
 
 	pid = fork();
@@ -49,14 +51,12 @@ int execute(char **args, char *argv, int cmd_count)
 	}
 	else if (pid < 0)
 	{
-		/* Fork failed */
 		perror("fork");
 		free(cmd);
 		return (1);
 	}
 	else
 	{
-		/* Parent process */
 		waitpid(pid, &status, 0);
 		free(cmd);
 	}
