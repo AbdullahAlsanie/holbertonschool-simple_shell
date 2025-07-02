@@ -20,7 +20,7 @@ char *find_path(char *cmd)
 	}
 
 	path_env = _getenv("PATH");
-	if (!path_env)
+	if (!path_env || path_env[0] == '\0')
 		return (NULL);
 
 	path_copy = strdup(path_env);
@@ -41,3 +41,4 @@ char *find_path(char *cmd)
 	free(path_copy);
 	return (NULL);
 }
+
