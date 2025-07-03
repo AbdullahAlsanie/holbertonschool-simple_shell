@@ -22,36 +22,35 @@ char *read_line(void)
 
 
 /**
- * split_line - splits a line into tokens separated by whitespace
- * @line: input string
- * Return: null-terminated array of strings
+ * split_line - splits a line into tokens
+ * @line: string to tokenize
+ * Return: array of strings
  */
 char **split_line(char *line)
 {
-    int bufsize = 64, i = 0;
-    char **tokens = malloc(bufsize * sizeof(char *));
-    char *token;
+        int bufsize = 64, i = 0;
+        char **tokens = malloc(bufsize * sizeof(char *));
+        char *token;
 
-    if (!tokens)
-        exit(EXIT_FAILURE);
-
-    token = strtok(line, " \t\r\n");
-    while (token)
-    {
-        tokens[i++] = strdup(token);
-        if (i >= bufsize)
-        {
-            bufsize += 64;
-            tokens = realloc(tokens, bufsize * sizeof(char *));
-            if (!tokens)
+        if (!tokens)
                 exit(EXIT_FAILURE);
-        }
-        token = strtok(NULL, " \t\r\n");
-    }
-    tokens[i] = NULL;
-    return (tokens);
-}
 
+        token = strtok(line, " \t\r\n");
+        while (token)
+        {
+                tokens[i++] = strdup(token);
+                if (i >= bufsize)
+                {
+                        bufsize += 64;
+                        tokens = realloc(tokens, bufsize * sizeof(char *));
+                        if (!tokens)
+                                exit(EXIT_FAILURE);
+                }
+                token = strtok(NULL, " \t\r\n");
+        }
+        tokens[i] = NULL;
+        return (tokens);
+}
 /**
  * _getenv - retrieves the value of an environment variable from environ
  * @name: name of the environment variable

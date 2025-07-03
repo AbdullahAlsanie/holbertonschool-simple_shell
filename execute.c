@@ -1,11 +1,13 @@
 #include "shell.h"
+
 /**
  * execute - executes a command using PATH
  * @args: array of command and arguments
  * @argv: program name (argv[0])
  * @cmd_count: command number (used in error messages)
- * Return: exit status of executed command or 127 if not found
+ * Return: 1 to continue loop, 0 to exit shell
  */
+
 int execute(char **args, char *argv, int cmd_count)
 {
     pid_t pid;
@@ -13,18 +15,15 @@ int execute(char **args, char *argv, int cmd_count)
     char *cmd;
 
     if (args[0] == NULL)
-        return (0);
+        return (1);
 
     if (strcmp(args[0], "exit") == 0)
         exit(0);
 
     if (strcmp(args[0], "env") == 0)
     {
-        extern char **environ;
-        int i = 0;
-        while (environ[i])
-            printf("%s\n", environ[i++]);
-        return (0);
+        print_env();
+        return (1);
     }
 
     cmd = find_path(args[0]);
@@ -32,8 +31,8 @@ int execute(char **args, char *argv, int cmd_count)
     {
         fprintf(stderr, "%s: %d: %s: not found\n", argv, cmd_count, args[0]);
         if (!isatty(STDIN_FILENO))
-            exit(127);
-        return (127);
+	        exit(127);
+        return (1);
     }
 
     if (access(cmd, X_OK) != 0)
@@ -42,7 +41,7 @@ int execute(char **args, char *argv, int cmd_count)
         free(cmd);
         if (!isatty(STDIN_FILENO))
             exit(127);
-        return (127);
+        return (1);
     }
 
     pid = fork();
@@ -64,8 +63,6 @@ int execute(char **args, char *argv, int cmd_count)
         waitpid(pid, &status, 0);
         free(cmd);
     }
-    if (WIFEXITED(status))
-        return (WEXITSTATUS(status));
-    return (status);
+    return (1);
 }
 
