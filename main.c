@@ -1,6 +1,6 @@
 #include "shell.h"
 
-int main(void)
+int main(int ac __attribute__((unused)), char **av)
 {
     char *line = NULL;
     size_t len = 0;
@@ -15,7 +15,7 @@ int main(void)
     while (1)
     {
         line_number++;
-        printf("#cisfun$ ");
+        printf("($) ");
         fflush(stdout);
 
         nread = getline(&line, &len, stdin);
@@ -58,7 +58,7 @@ int main(void)
        	path_cmd = find_path(argv[0]);
         if (path_cmd == NULL)
         {
-            fprintf(stderr, "%s: %d: %s: not found\n", argv[0], line_number, argv[0]);
+	    fprintf(stderr, "%s: %d: %s: not found\n", av[0], line_number, argv[0]);
             continue;
         }
 
