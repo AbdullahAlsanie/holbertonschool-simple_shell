@@ -1,62 +1,38 @@
 #include "shell.h"
 
-/**
- * main - entry point of shell
- * @argc: argument count (unused)
- * @argv: argument vector
- * Return: exit status
- */
 int main(int argc, char **argv)
 {
-    char *line = NULL;
-    char **args = NULL;
-    int status = 0;
-    int cmd_count = 0;
-    (void)argc;
+	char *line = NULL;
+	char **args = NULL;
+	int status = 1;
+	int cmd_count = 0;
+	(void)argc;
 
-    while (1)
-    {
-        if (isatty(STDIN_FILENO))
-            printf("($) ");
-
-        line = read_line();
-        if (!line) /* EOF */
-            break;
-
-        args = split_line(line);
-
-        if (!args[0]) /* empty line or spaces only */
-        {
-            free(line);
-            free_args(args);
-            continue;
-        }
-
-        cmd_count++;
-        status = execute(args, argv[0], cmd_count);
-
-        free(line);
-        free_args(args);
-
-        if (!isatty(STDIN_FILENO)) /* non-interactive mode */
-            exit(status);
-    }
-
-    free(line);
-    return (status);
+	do {
+		if (isatty(STDIN_FILENO))
+			printf("($) ");
+		line = read_line();
+		if (!line)
+			break;
+		cmd_count++;
+		args = split_line(line);
+		if (args[0])
+			status = execute(args, argv[0], cmd_count);
+		free(line);
+		free_args(args);
+	} while (status);
+	return (0);
 }
 
 /**
- * free_args - free the array of strings
- * @args: null-terminated string array
+ * free_args - frees the memory
+ * @args: the array to free
+ * Return: nothing
  */
 void free_args(char **args)
 {
-    int i = 0;
-    while (args[i])
-    {
-        free(args[i]);
-        i++;
-    }
-    free(args);
+	int i = 0;
+	while (args[i])
+		free(args[i++]);
+	free(args);
 }
