@@ -4,12 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
+#include <errno.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <sys/types.h>
 
 extern char **environ;
-char *find_path(char *command);
-
+void display_prompt(void);
+char *read_input(void);
+int execute_command(char *line);
+char *find_in_path(const char *command);
 #endif
-
