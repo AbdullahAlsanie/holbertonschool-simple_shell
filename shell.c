@@ -1,5 +1,11 @@
 #include "shell.h"
 
+/**
+ * main - Simple shell main loop
+ * @argc: argument count
+ * @argv: argument vector
+ * Return: 0 on success
+ */
 int main(int argc, char **argv)
 {
 	char *line = NULL;
@@ -21,18 +27,7 @@ int main(int argc, char **argv)
 		free(line);
 		free_args(args);
 	} while (status);
+
 	return (0);
 }
 
-/**
- * free_args - frees the memory
- * @args: the array to free
- * Return: nothing
- */
-void free_args(char **args)
-{
-	int i = 0;
-	while (args[i])
-		free(args[i++]);
-	free(args);
-}

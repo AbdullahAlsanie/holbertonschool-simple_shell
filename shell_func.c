@@ -1,74 +1,102 @@
 #include "shell.h"
 
-
 /**
- * read_line - reads a line from stdin using getline
- * Return: pointer to the line (must be freed by caller), or NULL on EOF
+ * read_line - reads a line from stdin
+ * Return: pointer to input line
  */
 char *read_line(void)
 {
-    char *line = NULL;
-    size_t bufsize = 0;
-    ssize_t nread;
+	char *line = NULL;
+	size_t bufsize = 0;
+	ssize_t nread;
 
-    nread = getline(&line, &bufsize, stdin);
-    if (nread == -1)
-    {
-        free(line);
-        return (NULL);
-    }
-    return (line);
+	nread = getline(&line, &bufsize, stdin);
+	if (nread == -1)
+	{
+		free(line);
+		return (NULL);
+	}
+	return (line);
 }
-
 
 /**
  * split_line - splits a line into tokens
- * @line: string to tokenize
- * Return: array of strings
+ * @line: input string
+ * Return: array of tokens
  */
 char **split_line(char *line)
 {
-        int bufsize = 64, i = 0;
-        char **tokens = malloc(bufsize * sizeof(char *));
-        char *token;
+	int bufsize = 64, i = 0;
+	char **tokens = malloc(bufsize * sizeof(char *));
+	char *token;
 
-        if (!tokens)
-                exit(EXIT_FAILURE);
+	if (!tokens)
+		exit(EXIT_FAILURE);
 
-        token = strtok(line, " \t\r\n");
-        while (token)
-        {
-                tokens[i++] = strdup(token);
-                if (i >= bufsize)
-                {
-                        bufsize += 64;
-                        tokens = realloc(tokens, bufsize * sizeof(char *));
-                        if (!tokens)
-                                exit(EXIT_FAILURE);
-                }
-                token = strtok(NULL, " \t\r\n");
-        }
-        tokens[i] = NULL;
-        return (tokens);
+	token = strtok(line, " \t\r\n");
+	while (token)
+	{
+		tokens[i++] = strdup(token);
+		if (i >= bufsize)
+		{
+			bufsize += 64;
+			tokens = realloc(tokens, bufsize * sizeof(char *));
+			if (!tokens)
+				exit(EXIT_FAILURE);
+		}
+		token = strtok(NULL, " \t\r\n");
+	}
+	tokens[i] = NULL;
+	return (tokens);
 }
+
 /**
- * _getenv - retrieves the value of an environment variable from environ
- * @name: name of the environment variable
- * Return: pointer to the value string or NULL if not found
+ * _getenv - gets value of environment variable
+ * @name: variable name
+ * Return: pointer to value
  */
 char *_getenv(const char *name)
 {
-    int i = 0;
-    size_t len = strlen(name);
+	int i = 0;
+	size_t len = strlen(name);
 
-    while (environ[i])
-    {
-        if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
-            return (environ[i] + len + 1);
-        i++;
-    }
-    return (NULL);
+	while (environ[i])
+	{
+		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
+			return (environ[i] + len + 1);
+		i++;
+	}
+	return (NULL);
 }
+
+/**
+ * free_args - frees tokens array
+ * @args: token array
+ */
+void free_args(char **args)
+{
+	int i = 0;
+
+	while (args[i])
+		free(args[i++]);
+	free(args);
+}
+
+/**
+ * print_env - prints environment
+ */
+void print_env(void)
+{
+	int i = 0;
+
+	while (environ[i])
+	{
+		printf("%s\n", environ[i]);
+		i++;
+	}
+}
+
+
 
 /**
  * execute - forks and executes a command
