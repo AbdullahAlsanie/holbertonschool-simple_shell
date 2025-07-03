@@ -65,22 +65,6 @@ void free_args(char **args)
 }
 
 /**
- * print_env - prints environment
- */
-void print_env(void)
-{
-	int i = 0;
-
-	while (environ[i])
-	{
-		printf("%s\n", environ[i]);
-		i++;
-	}
-}
-
-
-
-/**
  * execute - forks and executes a command
  * @args: array of arguments (NULL-terminated)
  * @argv: argv[0] from main, shell executable path
