@@ -1,10 +1,10 @@
 #include "shell.h"
-
 /**
- * find_path - finds full path of a command using PATH
- * @cmd: command name
- * Return: full path string or NULL if not found
+ * find_path - finds the full path of a command using PATH
+ * @cmd: the command name
+ * Return: full path if found, NULL otherwise
  */
+
 char *find_path(char *cmd)
 {
     char *path_env, *path_copy, *dir;
@@ -14,17 +14,22 @@ char *find_path(char *cmd)
     if (!cmd)
         return (NULL);
 
-    /* If absolute or relative path */
+    /* absolute or relative path */
     if (cmd[0] == '/' || strncmp(cmd, "./", 2) == 0 || strncmp(cmd, "../", 3) == 0)
     {
         if (stat(cmd, &st) == 0)
             return (strdup(cmd));
-        return (NULL);
+        else
+            return (NULL);
     }
 
+    /* get PATH */
     path_env = _getenv("PATH");
     if (!path_env || path_env[0] == '\0')
+    {
+        /* no PATH or empty PATH → do not search */
         return (NULL);
+    }
 
     path_copy = strdup(path_env);
     if (!path_copy)
@@ -45,8 +50,6 @@ char *find_path(char *cmd)
         }
         dir = strtok(NULL, ":");
     }
-
     free(path_copy);
     return (NULL);
 }
-
