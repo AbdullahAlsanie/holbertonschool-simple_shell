@@ -1,51 +1,55 @@
 #include "shell.h"
 
+
 /**
- * read_line - reads a line of input from stdin
- * Return: pointer to the line read
+ * read_line - reads a line from stdin using getline
+ * Return: pointer to the line (must be freed by caller), or NULL on EOF
  */
 char *read_line(void)
 {
-	char *line = NULL;
-	size_t bufsize = 0;
+    char *line = NULL;
+    size_t bufsize = 0;
+    ssize_t nread;
 
-	if (getline(&line, &bufsize, stdin) == -1)
-	{
-		free(line);
-		return (NULL);
-	}
-	return (line);
+    nread = getline(&line, &bufsize, stdin);
+    if (nread == -1)
+    {
+        free(line);
+        return (NULL);
+    }
+    return (line);
 }
 
+
 /**
- * split_line - splits a line into tokens
- * @line: string to tokenize
- * Return: array of strings
+ * split_line - splits a line into tokens separated by whitespace
+ * @line: input string
+ * Return: null-terminated array of strings
  */
 char **split_line(char *line)
 {
-	int bufsize = 64, i = 0;
-	char **tokens = malloc(bufsize * sizeof(char *));
-	char *token;
+    int bufsize = 64, i = 0;
+    char **tokens = malloc(bufsize * sizeof(char *));
+    char *token;
 
-	if (!tokens)
-		exit(EXIT_FAILURE);
+    if (!tokens)
+        exit(EXIT_FAILURE);
 
-	token = strtok(line, " \t\r\n");
-	while (token)
-	{
-		tokens[i++] = strdup(token);
-		if (i >= bufsize)
-		{
-			bufsize += 64;
-			tokens = realloc(tokens, bufsize * sizeof(char *));
-			if (!tokens)
-				exit(EXIT_FAILURE);
-		}
-		token = strtok(NULL, " \t\r\n");
-	}
-	tokens[i] = NULL;
-	return (tokens);
+    token = strtok(line, " \t\r\n");
+    while (token)
+    {
+        tokens[i++] = strdup(token);
+        if (i >= bufsize)
+        {
+            bufsize += 64;
+            tokens = realloc(tokens, bufsize * sizeof(char *));
+            if (!tokens)
+                exit(EXIT_FAILURE);
+        }
+        token = strtok(NULL, " \t\r\n");
+    }
+    tokens[i] = NULL;
+    return (tokens);
 }
 
 /**

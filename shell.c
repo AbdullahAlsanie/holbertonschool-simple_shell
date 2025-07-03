@@ -1,11 +1,10 @@
 #include "shell.h"
 
 /**
- * main - Entry point for the shell
- * @argc: Argument count (unused)
- * @argv: Argument vector
- *
- * Return: 0 always
+ * main - entry point of shell
+ * @argc: argument count (unused)
+ * @argv: argument vector
+ * Return: exit status
  */
 int main(int argc, char **argv)
 {
@@ -21,19 +20,25 @@ int main(int argc, char **argv)
             printf("($) ");
 
         line = read_line();
-        if (!line)
+        if (!line) /* EOF */
             break;
 
-        cmd_count++;
         args = split_line(line);
 
+        if (!args[0]) /* empty line or spaces only */
+        {
+            free(line);
+            free_args(args);
+            continue;
+        }
+
+        cmd_count++;
         status = execute(args, argv[0], cmd_count);
 
         free(line);
         free_args(args);
 
-        /* If shell is not interactive, exit with command status */
-        if (!isatty(STDIN_FILENO))
+        if (!isatty(STDIN_FILENO)) /* non-interactive mode */
             exit(status);
     }
 
@@ -42,14 +47,16 @@ int main(int argc, char **argv)
 }
 
 /**
- * free_args - Frees memory used by args array
- * @args: Null-terminated array of strings
+ * free_args - free the array of strings
+ * @args: null-terminated string array
  */
 void free_args(char **args)
 {
     int i = 0;
     while (args[i])
-        free(args[i++]);
+    {
+        free(args[i]);
+        i++;
+    }
     free(args);
 }
-
