@@ -1,2 +1,54 @@
+.TH hsh 1 "July 2025" "Holberton School" "Simple Shell Manual"
+
 .SH NAME
-.B simple_shell
+hsh \- simple UNIX command interpreter
+
+.SH SYNOPSIS
+.B hsh
+.RI [ no options ]
+
+.SH DESCRIPTION
+.B hsh
+is a simple UNIX command line interpreter developed as a project at Holberton School.
+It reads commands from standard input and executes them.
+
+The shell supports the following features:
+
+.IP \[bu] 2
+Execution of commands with arguments, e.g., \fBls -l /tmp\fR
+.IP \[bu] 2
+Handling of the built-in commands:
+    \fBexit\fR to exit the shell
+    \fBenv\fR to print the current environment
+.IP \[bu] 2
+Search for executables in the directories listed in the \fB$PATH\fR environment variable
+.IP \[bu] 2
+Command execution using \fBfork()\fR and \fBexecve()\fR
+
+.SH USAGE
+After starting
+.B hsh
+you will see a prompt \fB#cisfun$\fR (if in interactive mode). Type a command and press Enter to execute it.
+
+Example:
+
+.RS
+\fB$ ./hsh\fR  
+\fB#cisfun$ ls -l\fR  
+\fB(total output...) \fR  
+\fB#cisfun$ exit\fR  
+.RE
+
+.SH RETURN VALUE
+The return value is the exit status of the last executed command.
+
+.SH AUTHORS
+Abdullah alsani & Abdulrahman Al-Tayar from Holberton School.
+
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR fork (2),
+.BR execve (2),
+.BR getenv (3)
+
