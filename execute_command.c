@@ -50,6 +50,28 @@ int handle_builtins(char **argv)
 }
 
 /**
+ * get_command_path - Get full path for command or NULL if not found
+ * @argv: Argument vector
+ *
+ * Return: full path string or NULL
+ */
+char *get_command_path(char **argv)
+{
+	char *full_path;
+
+	if (strchr(argv[0], '/'))
+		return (argv[0]);
+
+	full_path = find_in_path(argv[0]);
+	if (!full_path)
+	{
+		fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
+		return (NULL);
+	}
+	return (full_path);
+}
+
+/**
  * run_external - runs an external command
  * @argv: argument list
  * @full_path: resolved path
@@ -119,17 +141,9 @@ int execute_command(char *line)
 	if (handle_builtins(argv) == 0)
 		return (0);
 
-	if (strchr(argv[0], '/'))
-		full_path = argv[0];
-	else
-	{
-		full_path = find_in_path(argv[0]);
-		if (!full_path)
-		{
-			fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-			return (127);
-		}
-	}
+	full_path = get_command_path(argv);
+	if (!full_path)
+		return (127);
 
 	status = run_external(argv, full_path);
 	return (status);
