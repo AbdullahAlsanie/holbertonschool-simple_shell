@@ -3,10 +3,10 @@
 extern char **environ;
 
 /**
- * _getenv - Get the envrionment variables
- * @name: The path to read from
+ * _getenv - Get an environment variable
+ * @name: The variable name
  *
- * Return: The list of paths
+ * Return: Pointer to the variable value, or NULL if not found
  */
 char *_getenv(char *name)
 {
@@ -15,18 +15,18 @@ char *_getenv(char *name)
 
 	for (i = 0; environ[i]; i++)
 	{
-		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
+		if (strncmp(environ[i], name, len) == 0 &&
+		    environ[i][len] == '=')
 			return (environ[i] + len + 1);
 	}
 	return (NULL);
 }
 
-
 /**
  * find_in_path - Searches for a command in PATH
  * @command: Command to search
  *
- * Return: PATH to command if found and executable, or NULL if not found
+ * Return: Path to command if found, or NULL
  */
 char *find_in_path(const char *command)
 {
@@ -48,7 +48,7 @@ char *find_in_path(const char *command)
 		if (access(full_path, X_OK) == 0)
 		{
 			free(path_copy);
-			return strdup(full_path);
+			return (strdup(full_path));
 		}
 		dir = strtok(NULL, ":");
 	}

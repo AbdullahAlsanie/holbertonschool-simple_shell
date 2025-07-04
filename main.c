@@ -17,17 +17,20 @@ int main(void)
 			display_prompt();
 
 		line = read_input();
-		if (line == NULL) /* Ctrl+D or error */
+
+		/* Ctrl+D or error */
+		if (line == NULL)
 		{
 			if (interactive)
 				write(STDOUT_FILENO, "\n", 1);
 			break;
 		}
 
-		if (line[0] != '\0') /* Skip empty lines */
+		/* Skip empty lines */
+		if (line[0] != '\0')
 		{
 			if (strncmp(line, "exit", 4) == 0 &&
-				(line[4] == '\n' || line[4] == '\0' || line[4] == ' '))
+			    (line[4] == '\n' || line[4] == '\0' || line[4] == ' '))
 			{
 				free(line);
 				break;
@@ -41,3 +44,4 @@ int main(void)
 
 	return (status);
 }
+
