@@ -1,88 +1,14 @@
 #include "shell.h"
 
 /**
- * parse_arguments - Splits a line into arguments
- * @line: Input line
- * @argv: Argument vector to populate
+ * check_access - Checks if the file is executable
+ * @argv: Argument list
+ * @full_path: Resolved path
  *
- * Return: argument count
+ * Return: 0 if OK, 127 if not executable
  */
-int parse_arguments(char *line, char **argv)
+int check_access(char **argv, char *full_path)
 {
-	int i = 0;
-	char *token;
-
-	token = strtok(line, " \t\n");
-	while (token != NULL && i < 63)
-	{
-		argv[i++] = token;
-		token = strtok(NULL, " \t\n");
-	}
-	argv[i] = NULL;
-	return (i);
-}
-
-/**
- * handle_builtins - handles built-in commands (exit/env)
- * @argv: arguments
- *
- * Return: -1 if not builtin, otherwise 0
- */
-int handle_builtins(char **argv)
-{
-	int j = 0;
-
-	if (strcmp(argv[0], "exit") == 0)
-		exit(0);
-
-	if (strcmp(argv[0], "env") == 0)
-	{
-		while (environ[j])
-		{
-			write(STDOUT_FILENO, environ[j], strlen(environ[j]));
-			write(STDOUT_FILENO, "\n", 1);
-			j++;
-		}
-		return (0);
-	}
-
-	return (-1);
-}
-
-/**
- * get_command_path - Get full path for command or NULL if not found
- * @argv: Argument vector
- *
- * Return: full path string or NULL
- */
-char *get_command_path(char **argv)
-{
-	char *full_path;
-
-	if (strchr(argv[0], '/'))
-		return (argv[0]);
-
-	full_path = find_in_path(argv[0]);
-	if (!full_path)
-	{
-		fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-		return (NULL);
-	}
-	return (full_path);
-}
-
-/**
- * run_external - runs an external command
- * @argv: argument list
- * @full_path: resolved path
- *
- * Return: status code
- */
-int run_external(char **argv, char *full_path)
-{
-	pid_t pid;
-	int status;
-
 	if (access(full_path, X_OK) != 0)
 	{
 		fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
@@ -90,6 +16,59 @@ int run_external(char **argv, char *full_path)
 			free(full_path);
 		return (127);
 	}
+	return (0);
+}
+
+/**
+ * child_process - Runs execve in child process
+ * @full_path: Path to executable
+ * @argv: Arguments
+ */
+void child_process(char *full_path, char **argv)
+{
+	if (execve(full_path, argv, environ) == -1)
+	{
+		fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
+		exit(127);
+	}
+}
+
+/**
+ * parent_process - Waits for child and frees memory
+ * @pid: Process ID
+ * @full_path: Path to executable
+ * @argv: Arguments
+ *
+ * Return: status code
+ */
+int parent_process(pid_t pid, char *full_path, char **argv)
+{
+	int status;
+
+	wait(&status);
+	if (full_path != argv[0])
+		free(full_path);
+
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else
+		return (1);
+}
+
+/**
+ * run_external - Runs an external command
+ * @argv: Argument list
+ * @full_path: Resolved path
+ *
+ * Return: status code
+ */
+int run_external(char **argv, char *full_path)
+{
+	pid_t pid;
+	int status = check_access(argv, full_path);
+
+	if (status != 0)
+		return (status);
 
 	pid = fork();
 	if (pid == -1)
@@ -101,51 +80,10 @@ int run_external(char **argv, char *full_path)
 	}
 
 	if (pid == 0)
-	{
-		if (execve(full_path, argv, environ) == -1)
-		{
-			fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-			exit(127);
-		}
-	}
+		child_process(full_path, argv);
 	else
-	{
-		wait(&status);
-		if (full_path != argv[0])
-			free(full_path);
+		status = parent_process(pid, full_path, argv);
 
-		if (WIFEXITED(status))
-			return (WEXITSTATUS(status));
-		else
-			return (1);
-	}
-
-	return (0);
-}
-
-/**
- * execute_command - Parses and executes a command line
- * @line: The input line to parse and execute
- *
- * Return: Status code
- */
-int execute_command(char *line)
-{
-	char *argv[64];
-	char *full_path;
-	int status;
-
-	if (parse_arguments(line, argv) == 0)
-		return (0);
-
-	if (handle_builtins(argv) == 0)
-		return (0);
-
-	full_path = get_command_path(argv);
-	if (!full_path)
-		return (127);
-
-	status = run_external(argv, full_path);
 	return (status);
 }
 
