@@ -1,11 +1,10 @@
 #include "shell.h"
 
-
 /**
- * _getenv - Get an environment variable
- * @name: The variable name
+ * _getenv - Get the environment variable value
+ * @name: The variable name to search
  *
- * Return: Pointer to the variable value, or NULL if not found
+ * Return: Pointer to value or NULL
  */
 char *_getenv(char *name)
 {
@@ -14,8 +13,7 @@ char *_getenv(char *name)
 
 	for (i = 0; environ[i]; i++)
 	{
-		if (strncmp(environ[i], name, len) == 0 &&
-		    environ[i][len] == '=')
+		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
 			return (environ[i] + len + 1);
 	}
 	return (NULL);
@@ -25,7 +23,7 @@ char *_getenv(char *name)
  * find_in_path - Searches for a command in PATH
  * @command: Command to search
  *
- * Return: Path to command if found, or NULL
+ * Return: Full path if found and executable, NULL otherwise
  */
 char *find_in_path(const char *command)
 {

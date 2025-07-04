@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * is_whitespace - Checks if the char is a whitespace character
+ * is_whitespace - Checks if the char is a "whitespace" character.
  * @ch: The character to check
  *
- * Return: 0 for false, 1 for true
+ * Return: 1 if whitespace, 0 otherwise
  */
 int is_whitespace(char ch)
 {
@@ -12,9 +12,9 @@ int is_whitespace(char ch)
 }
 
 /**
- * read_input - Reads the standard input and allocates memory
+ * read_input - Reads the standard input and allocates memory.
  *
- * Return: The cleaned string with redundant characters removed
+ * Return: The "cleaned" string with redundant characters removed.
  */
 char *read_input(void)
 {
@@ -27,10 +27,9 @@ char *read_input(void)
 	if (nread == -1)
 	{
 		free(line);
-		return (NULL); /* Handles EOF (Ctrl+D) or error */
+		return (NULL);
 	}
 
-	/* Remove newline at the end */
 	if (line[nread - 1] == '\n')
 		line[nread - 1] = '\0';
 

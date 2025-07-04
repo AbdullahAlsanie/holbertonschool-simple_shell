@@ -17,8 +17,6 @@ int main(void)
 			display_prompt();
 
 		line = read_input();
-
-		/* Ctrl+D or error */
 		if (line == NULL)
 		{
 			if (interactive)
@@ -26,7 +24,6 @@ int main(void)
 			break;
 		}
 
-		/* Skip empty lines */
 		if (line[0] != '\0')
 		{
 			if (strncmp(line, "exit", 4) == 0 &&
@@ -35,13 +32,10 @@ int main(void)
 				free(line);
 				break;
 			}
-
 			status = execute_command(line);
 		}
-
 		free(line);
 	}
-
 	return (status);
 }
 
