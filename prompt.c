@@ -6,6 +6,6 @@
 void display_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
-		write(STDOUT_FILENO, "#cisfun$ ", 9);
+		write(STDOUT_FILENO, "($user) ", 9);
 }
 
